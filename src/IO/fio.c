@@ -44,7 +44,6 @@ char *io_File(const char *file_path, const char *mode, const char *src) {
 	/* Mode: write */
 	if (!strcmp(mode, "a"))
 		fputs(src, pFile);
-		//fwrite(src, strlen(src), 1, pFile);
 
 
 
@@ -61,7 +60,6 @@ void save_matrix(const mat_t *matrix, const char *path)
 	memset(aBuf, 0, 20);
 
 	strcpy(mat_str, matrix->id);
-	//strcat(mat_str, matrix->id);
 	strcat(mat_str, ":");
 
 	for (size_t r = 0; r < 4; r++)
@@ -80,11 +78,8 @@ mat_t *load_matrix(const char *path, const char *matrixID)
 {
 	int init = 0;
 	mat_t *matrix = init_mat4(4, 4, matrixID);
-	//FILE *pfile = fopen(path, "r");
 
-	//char *line;
 	char *token = NULL;
-
 	char *aBuf = io_File(path, "r", NULL);
 
 	if (!aBuf)
@@ -102,8 +97,6 @@ mat_t *load_matrix(const char *path, const char *matrixID)
 		else if(init && token == NULL)
 			return NULL;
 
-		//line = ReadLine(pfile);
-		//token = strtok(line, ":");	// get matrix ID
 		init = 1;
 	} while (strcmp(token, matrixID) /*|| line != NULL*/);
 	
@@ -128,6 +121,48 @@ mat_t *load_matrix(const char *path, const char *matrixID)
 	} else
 		return NULL;
 
-	//fclose(pfile);
-	return matrix;
+	if(is_valid_mat4(matrix))
+		return matrix;
+
+	return NULL;
+}
+
+mat_t *load_matrix_by_line(const char *path, int line)
+{
+	mat_t *matrix = init_mat4(4, 4, "HEXKV");	// name: "HEXKV" since there's no name associated with the matrix.
+
+	FILE *pfile = fopen(path, "r");
+	char *data = malloc(32);
+
+	/* aquire matrix by line */
+	for (size_t i = 0; i < line; i++)
+		data = ReadLine(pfile);
+
+	/* close the file stream since we got the matrix */
+	fclose(pfile);
+
+	/* get first character in the matrix */
+	data = strtok(data, " ");
+	int init = 0;
+
+	/* make sure we got the matrix data */
+	if (!data)
+		return NULL;
+
+	/* loop through every other character */ //--
+	for (size_t r = 0; r < 4; r++)			 // row
+		for (size_t c = 0; c < 4; c++)		 // column
+		{
+			if (init)
+				data = strtok(NULL, " ");
+			else
+				init = 1;
+			matrix->data[r][c] = getInt(*(data));	// populate the matrix variable structure.
+
+		}
+
+	if (is_valid_mat4(matrix))
+		return matrix;
+
+	return NULL;
 }

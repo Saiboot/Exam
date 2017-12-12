@@ -3,6 +3,7 @@
 
 #include "../../PCLIBS/simpio.h"	// File io
 #include "../mat.h"
+#include "../hex.h"
 
 #include <string.h>
 
@@ -17,5 +18,7 @@ char *io_File(const char *file_path, const char *mode, const char *src);
 void save_matrix(const mat_t *matrix, const char *path);
 
 mat_t *load_matrix(const char *path, const char *matrixID);
+
+mat_t *load_matrix_by_line(const char *path, int line);
 
 #endif // !_FIO_H
