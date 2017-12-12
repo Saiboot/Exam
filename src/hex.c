@@ -6,9 +6,17 @@ char getHex(int digit)
 	return hex_table[digit];
 }
 
+int getInt(char hex)
+{
+	if ((int)hex <= 57)
+		return ((int)hex - MAGIC_NUM);
+
+	return ((int)hex - MAGIC_CHAR);
+}
+
 void getHexSubsets(int **subs, int *elements)
 {
-	int **subsets = malloc(sizeof(int *));
+	subs = malloc(sizeof(int *));
 	int e = 0;
 
 	for (size_t a = 0; a < 16; a++)
@@ -18,16 +26,26 @@ void getHexSubsets(int **subs, int *elements)
 				{
 					if (a + b + c + d == 30)
 					{
-						realloc(subsets, sizeof(int *) * (e + 1));
-						subsets[e] = malloc(sizeof(int) * 4);
+						if (a == b || a == c || a == d || b == c || b == d || c == d)
+							continue;
 
-						subsets[e][0] = a;
-						subsets[e][1] = b;
-						subsets[e][2] = c;
-						subsets[e][3] = d;
+						if(e)
+							realloc(subs, sizeof(int *) * (e + 1));
+
+						subs[e] = malloc(sizeof(int) * 4);
+
+						subs[e][0] = a;
+						subs[e][1] = b;
+						subs[e][2] = c;
+						subs[e][3] = d;
 						e++;
+
+						for (size_t i = 0; i < e; i++)
+						{
+							printf("%d %d %d %d\n", subs[i][0], subs[i][1], subs[i][2], subs[i][3]);
+						}
+
 					}
 				}
-
-	return subsets;
+	*elements = e;
 }
