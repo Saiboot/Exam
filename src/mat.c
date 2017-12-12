@@ -72,6 +72,9 @@ int is_valid_mat4(mat_t *matrix)
 
 int is_magic_mat(mat_t *matrix)
 {
+	if (!is_valid_mat4(matrix))
+		return 0;
+
 	int magic = 1;
 
 	int magic_row = 0;
