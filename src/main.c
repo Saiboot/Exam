@@ -7,8 +7,6 @@
 #include "mat.h"
 #include "IO\fio.h"
 
-// #include "hex.h"
-
 #include "../PCLIBS/random.h"
 
 #define NAME_MAX 20
@@ -16,27 +14,7 @@
 
 int main()
 {
-	
-	int **subsets;
-	int elem;
 
-	getHexSubsets(&subsets, &elem);
-
-	printf("\n");
-	for (size_t r = 0; r < elem; r++)
-	{
-		for (size_t c = 0; c < 4; c++)
-		{
-				printf("[%c]", getHex(subsets[r][c]));
-
-		}
-		printf("\n");
-	}
-
-	printf("\n");
-
-	getchar();
-	
 	int opt = 0;
 
 	mat_t *hex_mat = init_mat4(4, 4, NULL);
@@ -54,7 +32,7 @@ int main()
 		/* menu */
 		puts(".:|Menu");
 		puts("(1) Input new 4x4 Matrix.");
-		puts("(2) Load 4x4 Matrix from file by name.");
+		puts("(2) Load 4x4 Matrix from file.");
 		puts("(3) Play Fill in matrix game.");
 		puts("(4) Exit.");
 
@@ -89,7 +67,7 @@ int main()
 						if (duplicate && tmp != 20)
 							printf("Error: value duplicate!\n");
 
-						printf("[%d][%d]: ", r+1, c+1);
+						printf("[%d][%d]: ", r, c);
 						scanf("%d", &tmp);
 						getchar();
 
@@ -122,35 +100,72 @@ int main()
 
 			break;
 		case 2:
+			system("cls");
+			puts("(1) Load by matrix name. \t(matrices.txt) ");
+			puts("(2) Load by line number. \t(hexkvadrater.txt) ");
+			puts("(3) Return to main menu.");
+
+			puts("\n NOTE: Some files needs to be loaded by name, some by line number.");
+
+			printf("\n>> ");
+			scanf("%d", &opt);
+			getchar();
 
 			printf("File path: ");
 			scanf("%s", file_path);
 			getchar();
 
-			printf("Matrix name: ");
-			scanf("%s", name);
-			getchar();
+			int line;
 
-			hex_mat = load_matrix(file_path, name);
+			switch (opt)
+			{
+			case 1:
+				printf("Matrix name: ");
+				scanf("%s", name);
+				getchar();
 
-			system("cls");
+				hex_mat = load_matrix(file_path, name);
+				break;
+			case 2:
+				printf("Line number: ");
+				scanf("%d", &line);
+				getchar();
 
-			printf("Loaded Matrix: %s \n", hex_mat->id);
-			print_mat(hex_mat);
+				if(line)
+					hex_mat = load_matrix_by_line(file_path, line);
 
-			getchar();
+				break;
+			case 3:
+				break;
+			default:
+				break;
+			}
+			
+			if (opt < 3) {
 
+				system("cls");
+
+				printf("Loaded Matrix: %s \n", hex_mat->id);
+				print_mat(hex_mat);
+				printf("Magic [1/0]: [%d]", is_magic_mat(hex_mat));
+				getchar();
+
+			}
 			break;
 		case 3:
 
 			system("cls");
 			printf("Loading magic matrix...\n");
 
-			/* load predefined matrix */
-			hex_mat = load_matrix("matrices.txt", "default");
-			if (hex_mat) {
+			int ln = 0;
+			ln = rand() % 10 + 1;
+			
+			/* load a predefined matrix */
+			hex_mat = load_matrix_by_line("hexkvadrater.txt", ln);
+
+			/* make sure we loaded a matirx, it's magic and it's a valid matrix (validness checked within is_magic_mat() func). */
+			if (hex_mat && is_magic_mat(hex_mat)) {
 				printf("Load successful!\n");
-				print_mat(hex_mat);
 				printf("Start game?");
 				getchar();
 			} else {
