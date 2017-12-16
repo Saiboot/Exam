@@ -43,12 +43,13 @@ int main()
 		scanf("%d", &opt);
 		getchar();
 
-
+		/* options */
 		switch (opt)
 		{
-		case 1:
+		case 1:	// Input new 4x4 Matrix.
 			printf("Name your new matrix: ");
 			scanf("%s", name);
+			getchar();
 
 			hex_mat->id = name;
 			duplicate = 0;
@@ -99,7 +100,7 @@ int main()
 			}
 
 			break;
-		case 2:
+		case 2: // Load 4x4 Matrix from file.
 			system("cls");
 			puts("(1) Load by matrix name. \t(matrices.txt) ");
 			puts("(2) Load by line number. \t(hexkvadrater.txt) ");
@@ -119,14 +120,14 @@ int main()
 
 			switch (opt)
 			{
-			case 1:
+			case 1: // Load by name.
 				printf("Matrix name: ");
 				scanf("%s", name);
 				getchar();
 
 				hex_mat = load_matrix(file_path, name);
 				break;
-			case 2:
+			case 2: // Load by line number.
 				printf("Line number: ");
 				scanf("%d", &line);
 				getchar();
@@ -135,7 +136,7 @@ int main()
 					hex_mat = load_matrix_by_line(file_path, line);
 
 				break;
-			case 3:
+			case 3: // Return to main menu.
 				break;
 			default:
 				break;
@@ -147,12 +148,12 @@ int main()
 
 				printf("Loaded Matrix: %s \n", hex_mat->id);
 				print_mat(hex_mat);
-				printf("Magic [1/0]: [%d]", is_magic_mat(hex_mat));
+				printf("Magic [1/0]: [%d]", is_magic_mat4(hex_mat));
 				getchar();
 
 			}
 			break;
-		case 3:
+		case 3: // Play Fill in matrix game.
 
 			system("cls");
 			printf("Loading magic matrix...\n");
@@ -164,7 +165,7 @@ int main()
 			hex_mat = load_matrix_by_line("hexkvadrater.txt", ln);
 
 			/* make sure we loaded a matirx, it's magic and it's a valid matrix (validness checked within is_magic_mat() func). */
-			if (hex_mat && is_magic_mat(hex_mat)) {
+			if (hex_mat && is_magic_mat4(hex_mat)) {
 				printf("Load successful!\n");
 				printf("Start game?");
 				getchar();
@@ -221,15 +222,14 @@ int main()
 			system("cls");
 			print_mat(hex_mat);
 
-			if (is_magic_mat(hex_mat))
+			if (is_magic_mat4(hex_mat))
 				printf("It's magical!!\n");
 
 			break;
 		case 4:
 			exit(EXIT_SUCCESS);
 		default:
-			printf("Invalid option!\n");
-			getchar();
+			printf("Invalid option! ");
 			getchar();
 		}
 	}
@@ -238,6 +238,11 @@ int main()
 	return 0;
 }
 
+
+/*	check_mat:
+ *	check for duplicate of values inside a matrix
+ *	return: 1/0
+ */
 int check_mat(mat_t *matrix, int value)
 {
 	for (size_t i = 0; i < matrix->rows; i++)

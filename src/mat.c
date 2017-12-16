@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "hex.h"
 
-mat_t *init_mat4(int rows, int columns, const char *name)
+mat_t *init_mat4(const int rows, const int columns, const char *name)
 {
 	mat_t *matrix = malloc(sizeof(mat_t));
 	matrix->rows = rows;
@@ -25,14 +25,7 @@ mat_t *init_mat4(int rows, int columns, const char *name)
 	return matrix;
 }
 
-void free_mat4(mat_t *matrix)
-{
-	for (int i = 0; i < matrix->rows; i++)
-		free(matrix->data[i]);
-	free(matrix->data);
-}
-
-void print_mat(mat_t *matrix)
+void print_mat(const mat_t *matrix)
 {
 	printf("\n");
 
@@ -53,7 +46,7 @@ void print_mat(mat_t *matrix)
 	printf("\n");
 }
 
-int is_valid_mat4(mat_t *matrix)
+int is_valid_mat4(const mat_t *matrix)
 {
 	int sum = 0;
 	for (size_t i = 0; i < matrix->rows; i++)
@@ -70,7 +63,7 @@ int is_valid_mat4(mat_t *matrix)
 	return 0;
 }
 
-int is_magic_mat(mat_t *matrix)
+int is_magic_mat4(const mat_t *matrix)
 {
 	if (!is_valid_mat4(matrix))
 		return 0;
@@ -96,4 +89,11 @@ int is_magic_mat(mat_t *matrix)
 	}
 
 	return magic;
+}
+
+void free_mat4(mat_t *matrix)
+{
+	for (int i = 0; i < matrix->rows; i++)
+		free(matrix->data[i]);
+	free(matrix->data);
 }
