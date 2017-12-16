@@ -8,6 +8,6 @@
   - Line number
 - Play Fill in matirx game!
 ``` txt
-  This game removes 1 - 8 elements from a randomized magic matrix.<br/>
+  This game removes 1 - 8 elements from a randomized magic matrix.
   Then it's your turn to input the right numbers.
 ```
