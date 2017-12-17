@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <time.h>
 
+#include "row.h"
+
 #include "mat.h"
 #include "IO\fio.h"
 
@@ -14,7 +16,7 @@
 
 int main()
 {
-
+	int **rows;
 	int opt = 0;
 
 	mat_t *hex_mat = init_mat4(4, 4, NULL);
@@ -34,7 +36,8 @@ int main()
 		puts("(1) Input new 4x4 Matrix.");
 		puts("(2) Load 4x4 Matrix from file.");
 		puts("(3) Play Fill in matrix game.");
-		puts("(4) Exit.");
+		puts("(4) Calculate  magic squares & rows.");
+		puts("(5) Exit.");
 
 		if(hex_mat)
 			printf("::|Current Matrix: %s\n\n", hex_mat->id);
@@ -227,6 +230,97 @@ int main()
 
 			break;
 		case 4:
+
+			rows = malloc(sizeof(int *));
+			rows[0] = malloc(sizeof(int) * ROW_ELEMS);
+
+			// First row is a trash row.
+			for (size_t i = 0; i < ROW_ELEMS; i++)
+				rows[0][i] = 55;
+
+			int rows_cnt = 1;
+			int valid_row_cnt = 0;
+			int magic_cnt = 0;
+
+			for (size_t e1 = 0; e1 < MAT4x4; e1++) {
+				for (size_t e2 = 0; e2 < MAT4x4; e2++) {
+					for (size_t e3 = 0; e3 < MAT4x4; e3++) {
+						for (size_t e4 = 0; e4 < MAT4x4; e4++) {
+
+							if (valid_row(e1, e2, e3, e4)) {
+								valid_row_cnt++;
+
+								if (magic_row(e1, e2, e3, e4)) {
+									magic_cnt++;
+
+									if (new_row(e1, e2, e3, e4, rows, rows_cnt)) {
+
+										rows_cnt++;
+
+										rows = realloc(rows, sizeof(int *) * rows_cnt);
+										rows[(rows_cnt - 1)] = malloc(sizeof(int) * ROW_ELEMS);
+
+										rows[(rows_cnt - 1)][0] = e1;
+										rows[(rows_cnt - 1)][1] = e2;
+										rows[(rows_cnt - 1)][2] = e3;
+										rows[(rows_cnt - 1)][3] = e4;
+
+										printf("Inserted >> [%d] { %d, %d, %d, %d }\n", (rows_cnt - 1), e1, e2, e3, e4);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			printf("\nGenerated:\n");
+			printf("valid rows count: %d\n", valid_row_cnt);
+			printf("magic rows count: %d\n", magic_cnt);
+			printf("Unique rows: %d\n", rows_cnt-1);
+			getchar();
+
+			printf("Calculating squares...\n");
+			register int squares = 0;
+
+			for (size_t r1 = 1; r1 < rows_cnt; r1++)
+				for (size_t r2 = 1; r2 < rows_cnt; r2++) {
+
+					if (!unique_row(rows[r1], rows[r2]))
+						continue;
+
+					for (size_t r3 = 1; r3 < rows_cnt; r3++) {
+
+						if (!unique_row(rows[r1], rows[r3]))
+							continue;
+
+						if (!unique_row(rows[r2], rows[r3]))
+							continue;
+
+						for (size_t r4 = 1; r4 < rows_cnt; r4++)
+						{
+
+							if (!unique_row(rows[r1], rows[r4]))
+								continue;
+
+							if (!unique_row(rows[r2], rows[r4]))
+								continue;
+
+							if (!unique_row(rows[r3], rows[r4]))
+								continue;
+
+							squares++;
+
+
+						}
+
+					}
+				}
+
+			printf("DONE, found %d squares!\n", squares);
+			getchar();
+
+		case 5:
 			exit(EXIT_SUCCESS);
 		default:
 			printf("Invalid option! ");
@@ -237,23 +331,3 @@ int main()
 	getchar();
 	return 0;
 }
-
-
-/*	check_mat:
- *	check for duplicate of values inside a matrix
- *	return: 1/0
- */
-int check_mat(mat_t *matrix, int value)
-{
-	for (size_t i = 0; i < matrix->rows; i++)
-	{
-		for (size_t j = 0; j < matrix->cols; j++)
-		{
-			if (matrix->data[i][j] == value)
-				return 1;
-		}
-	}
-
-	return 0;
-}
-
