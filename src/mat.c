@@ -91,6 +91,20 @@ int is_magic_mat4(const mat_t *matrix)
 	return magic;
 }
 
+int check_mat(mat_t *matrix, int value)
+{
+	for (size_t i = 0; i < matrix->rows; i++)
+	{
+		for (size_t j = 0; j < matrix->cols; j++)
+		{
+			if (matrix->data[i][j] == value)
+				return 1;
+		}
+	}
+
+	return 0;
+}
+
 void free_mat4(mat_t *matrix)
 {
 	for (int i = 0; i < matrix->rows; i++)

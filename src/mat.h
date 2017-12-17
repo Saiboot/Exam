@@ -47,6 +47,12 @@ int is_valid_mat4(const mat_t *matrix);
 */
 int is_magic_mat4(const mat_t *matrix);
 
+/*	check_mat:
+*	check for duplicate of values inside a matrix
+*	return: 1/0
+*/
+int check_mat(mat_t *matrix, int value);
+
 /*	free_mat4:
  *	Deallocate a 4x4 matrix from memory
  *	return: nothing.
