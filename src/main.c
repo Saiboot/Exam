@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include "row.h"
+#include "square.h"
 
 #include "mat.h"
 #include "IO\fio.h"
@@ -238,8 +239,8 @@ int main()
 			for (size_t i = 0; i < ROW_ELEMS; i++)
 				rows[0][i] = 55;
 
-			int rows_cnt = 1;
-			int valid_row_cnt = 0;
+			register int rows_cnt = 1;
+			register int valid_row_cnt = 0;
 			int magic_cnt = 0;
 
 			for (size_t e1 = 0; e1 < MAT4x4; e1++) {
@@ -278,10 +279,17 @@ int main()
 			printf("valid rows count: %d\n", valid_row_cnt);
 			printf("magic rows count: %d\n", magic_cnt);
 			printf("Unique rows: %d\n", rows_cnt-1);
-			getchar();
 
 			printf("Calculating squares...\n");
-			register int squares = 0;
+
+			int **squares = malloc(sizeof(int *));
+			squares[0] = malloc(sizeof(int) * ROW_ELEMS * 4);
+
+			// First row is a trash row.
+			for (size_t i = 0; i < ROW_ELEMS * 4; i++)
+				rows[0][i] = 55;
+
+			register int square_cnt = 1;
 
 			for (size_t r1 = 1; r1 < rows_cnt; r1++)
 				for (size_t r2 = 1; r2 < rows_cnt; r2++) {
@@ -309,17 +317,49 @@ int main()
 							if (!unique_row(rows[r3], rows[r4]))
 								continue;
 
-							squares++;
+							square_cnt++;
 
+							squares = realloc(squares, sizeof(int *) * square_cnt);
+							squares[(square_cnt - 1)] = malloc(sizeof(int) * ROW_ELEMS * 4);
+
+							squares[(square_cnt - 1)][0] = rows[r1][0];
+							squares[(square_cnt - 1)][1] = rows[r1][1];
+							squares[(square_cnt - 1)][2] = rows[r1][2];
+							squares[(square_cnt - 1)][3] = rows[r1][3];
+
+							squares[(square_cnt - 1)][4] = rows[r2][0];
+							squares[(square_cnt - 1)][5] = rows[r2][1];
+							squares[(square_cnt - 1)][6] = rows[r2][2];
+							squares[(square_cnt - 1)][7] = rows[r2][3];
+
+							squares[(square_cnt - 1)][8] = rows[r3][0];
+							squares[(square_cnt - 1)][9] = rows[r3][1];
+							squares[(square_cnt - 1)][10] = rows[r3][2];
+							squares[(square_cnt - 1)][11] = rows[r3][3];
+
+							squares[(square_cnt - 1)][12] = rows[r4][0];
+							squares[(square_cnt - 1)][13] = rows[r4][1];
+							squares[(square_cnt - 1)][14] = rows[r4][2];
+							squares[(square_cnt - 1)][15] = rows[r4][3];
 
 						}
 
 					}
 				}
 
-			printf("DONE, found %d squares!\n", squares);
+			printf("DONE, found %d squares!\n", square_cnt-1);
+			printf("Example square: ");
+
+			int index;
+			scanf("%d", &index);
 			getchar();
 
+			print_square(squares, index);
+
+			printf("[Enter] --> Main menu");
+			getchar();
+			
+			break;
 		case 5:
 			exit(EXIT_SUCCESS);
 		default:
