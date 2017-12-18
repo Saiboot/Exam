@@ -3,8 +3,8 @@
 You need to **manually compile** the project yourself since there **isn't a makefile** provided.
 The reason there isn't a makefile included is because the application is developed within
 the *Visual Studio 2015 IDE*. Alternatively you can clone the repository and compile it 
-within Visual Studio. 
-- [x] [release](https://github.com/Saiboot/Exam/tree/1.0) *-newest*
+within Visual Studio.
+- x86 [build](https://github.com/Saiboot/Exam/tree/1.0)
 ### Console Application with Features
 - Write your own matrix
 - Load a matrix from file by either:
